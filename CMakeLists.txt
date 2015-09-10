@@ -1,0 +1,4 @@
+PROJECT(GLJoy)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+#add_subdirectory(src bin)
+ADD_SUBDIRECTORY(src)
