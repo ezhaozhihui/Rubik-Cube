@@ -41,6 +41,12 @@ class Cube
 public:
     Cube();
     void translate(float dx, float dy, float dz);
+    void setFaceColor(Color front_color,
+                      Color back_color,
+                      Color left_color,
+                      Color right_color,
+                      Color top_color,
+                      Color bottom_color);
     void draw();
 
 private:
@@ -52,7 +58,9 @@ class RubikCube
 {
 public:
     RubikCube();
+    void init();
+    void draw();
 
 private:
-    Cube SubCube[3][3];
+    Cube *SubCube[3][3][3];
 };
