@@ -44,35 +44,67 @@ void RubikCube::init()
             for (int z = 0; z < 3; z++)
                 SubCube[x][y][z]->translate(x - 1.5f, y - 1.5f, z - 1.5f);
 
-    SubCube[1][1][2]->setFaceColor(yellow, black, black, black, black, black);
-    SubCube[0][1][2]->setFaceColor(blue, black, black, black, black, black);
-    SubCube[2][2][2]->setFaceColor(red, black, black, green, orange, black);
+    int i, j;
+
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++)
+        {
+            SubCube[i][j][2]->setFaceColor(front, white);
+            SubCube[i][j][0]->setFaceColor(back, green);
+        }
+
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++)
+        {
+            SubCube[0][i][j]->setFaceColor(left, yellow);
+            SubCube[2][i][j]->setFaceColor(right, orange);
+        }
+
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++)
+        {
+            SubCube[i][0][j]->setFaceColor(bottom, blue);
+            SubCube[i][2][j]->setFaceColor(top, red);
+        }
+
+    theta_x = 0;
+    theta_y = 0;
+    theta_z = 0;
 }
 
 void RubikCube::draw()
 {
-    int type = 7;
+    int type = 0;
     switch (type) {
     case 0:
     case 1:
     case 2:
+        glPushMatrix();
+        glRotatef(theta_x, 1, 0, 0);
         for (int y = 0; y < 3; y++)
             for (int z = 0; z < 3; z++)
                 SubCube[type][y][z]->draw();
+        glPopMatrix();
         break;
     case 3:
     case 4:
     case 5:
+        glPushMatrix();
+        glRotatef(theta_y, 0, 1, 0);
         for (int x = 0; x < 3; x++)
             for (int z = 0; z < 3; z++)
                 SubCube[x][type%3][z]->draw();
+        glPopMatrix();
         break;
     case 6:
     case 7:
     case 8:
+        glPushMatrix();
+        glRotatef(theta_z, 0, 0, 1);
         for (int x = 0; x < 3; x++)
             for (int y = 0; y < 3; y++)
                 SubCube[x][y][type%3]->draw();
+        glPopMatrix();
         break;
     default:
         break;
@@ -107,12 +139,12 @@ Cube::Cube()
     m_vertex[6][0] = 0; m_vertex[6][1] = 1; m_vertex[6][2] = 0;
     m_vertex[7][0] = 0; m_vertex[7][1] = 0; m_vertex[7][2] = 0;
 
-    face_color[front]   = white;
-    face_color[back]    = red;
-    face_color[left]    = yellow;
-    face_color[right]   = orange;
-    face_color[top]     = green;
-    face_color[bottom]  = blue;
+    face_color[front]   = black; 
+    face_color[back]    = black; 
+    face_color[left]    = black; 
+    face_color[right]   = black; 
+    face_color[top]     = black; 
+    face_color[bottom]  = black; 
 }
 
 void Cube::draw()
@@ -203,4 +235,9 @@ void Cube::setFaceColor(Color front_color,
     face_color[right]  = right_color;
     face_color[top]    = top_color;
     face_color[bottom] = bottom_color;
+}
+
+void Cube::setFaceColor(Face face_name, Color color_name)
+{
+    face_color[face_name] = color_name;
 }

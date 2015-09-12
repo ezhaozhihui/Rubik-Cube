@@ -47,6 +47,8 @@ public:
                       Color right_color,
                       Color top_color,
                       Color bottom_color);
+    void setFaceColor(Face face_name, Color color_name);
+
     void draw();
 
 private:
@@ -63,4 +65,7 @@ public:
 
 private:
     Cube *SubCube[3][3][3];
+    float theta_x;
+    float theta_y;
+    float theta_z;
 };
