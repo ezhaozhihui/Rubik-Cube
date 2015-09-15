@@ -17,15 +17,18 @@
 #include "Cube.h"
 #include <GL/glut.h>
 
+const float DEG2RAD = 3.141592653f / 180;
+const float DELTA_ANGLE = 5 * DEG2RAD;
+
 static GLubyte color[][3] =
 {
-    {243, 0, 0},    // red
-    {6, 250, 0},    // green
-    {102, 105, 255},// blue
-    {254, 255, 70}, // yellow
-    {253, 98, 0},   // orange
-    {255, 255, 255},// white
-    {0, 0, 0},      // black
+    {243 , 0   , 0}   , // red
+    {6   , 250 , 0}   , // green
+    {102 , 105 , 255} , // blue
+    {254 , 255 , 70}  , // yellow
+    {253 , 98  , 0}   , // orange
+    {255 , 255 , 255} , // white
+    {50  , 50  , 50}  , // black
 };
 
 RubikCube::RubikCube()
@@ -49,8 +52,8 @@ void RubikCube::init()
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
         {
-            SubCube[i][j][2]->setFaceColor(front, white);
-            SubCube[i][j][0]->setFaceColor(back, green);
+            SubCube[i][j][0]->setFaceColor(front, white);
+            SubCube[i][j][2]->setFaceColor(back, green);
         }
 
     for (i = 0; i < 3; i++)
@@ -67,65 +70,51 @@ void RubikCube::init()
             SubCube[i][2][j]->setFaceColor(top, red);
         }
 
-    theta_x = 0;
-    theta_y = 0;
-    theta_z = 0;
 }
 
 void RubikCube::draw()
 {
-    int type = 0;
-    switch (type) {
+    int x, y, z;
+    for (x = 0; x < 3; x++)
+        for (y = 0; y < 3; y++)
+            for (z = 0; z < 3; z++)
+                SubCube[x][y][z]->draw();
+}
+
+void RubikCube::updateCube(int axis)
+{
+    Matrix3 mat;
+    int x, y, z;
+    switch (axis) {
     case 0:
     case 1:
     case 2:
-        glPushMatrix();
-        glRotatef(theta_x, 1, 0, 0);
-        for (int y = 0; y < 3; y++)
-            for (int z = 0; z < 3; z++)
-                SubCube[type][y][z]->draw();
-        glPopMatrix();
+        for (y = 0; y < 3; y++)
+            for (z = 0; z < 3; z++)
+                SubCube[axis][y][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
         break;
     case 3:
     case 4:
     case 5:
-        glPushMatrix();
-        glRotatef(theta_y, 0, 1, 0);
-        for (int x = 0; x < 3; x++)
-            for (int z = 0; z < 3; z++)
-                SubCube[x][type%3][z]->draw();
-        glPopMatrix();
+        for (x = 0; x < 3; x++)
+            for (z = 0; z < 3; z++)
+                SubCube[x][axis%3][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
         break;
     case 6:
     case 7:
     case 8:
-        glPushMatrix();
-        glRotatef(theta_z, 0, 0, 1);
-        for (int x = 0; x < 3; x++)
-            for (int y = 0; y < 3; y++)
-                SubCube[x][y][type%3]->draw();
-        glPopMatrix();
+        for (x = 0; x < 3; x++)
+            for (y = 0; y < 3; y++)
+                SubCube[x][y][axis%3]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
         break;
     default:
         break;
     }
+}
 
-    for (int x = 0; x < 3; x++)
-    {
-        if (x == type)
-            continue;
-        for (int y = 0; y < 3; y++)
-        {
-            if (y + 3 == type)
-                continue;
-            for (int z = 0; z < 3; z++)
-            {
-                if (z + 6 == type)
-                    continue;
-                SubCube[x][y][z]->draw();
-            }
-        }
-    }
+void RubikCube::updateCubeIndex()
+{
+
 }
 
 Cube::Cube()
@@ -139,12 +128,7 @@ Cube::Cube()
     m_vertex[6][0] = 0; m_vertex[6][1] = 1; m_vertex[6][2] = 0;
     m_vertex[7][0] = 0; m_vertex[7][1] = 0; m_vertex[7][2] = 0;
 
-    face_color[front]   = black; 
-    face_color[back]    = black; 
-    face_color[left]    = black; 
-    face_color[right]   = black; 
-    face_color[top]     = black; 
-    face_color[bottom]  = black; 
+    setFaceColor(black, black, black, black, black, black);
 }
 
 void Cube::draw()
@@ -222,6 +206,21 @@ void Cube::translate(float dx, float dy, float dz)
     }
 }
 
+void Cube::multiMatrix(Matrix3 &mat)
+{
+    float tmp0, tmp1, tmp2;
+    // row-major matrix
+    for (int i = 0; i < 8; i++)
+    {
+        tmp0 = m_vertex[i][0];
+        tmp1 = m_vertex[i][1];
+        tmp2 = m_vertex[i][2];
+        m_vertex[i][0] = tmp0 * mat[0] + tmp1 * mat[1] + tmp2 * mat[2];
+        m_vertex[i][1] = tmp0 * mat[3] + tmp1 * mat[4] + tmp2 * mat[5];
+        m_vertex[i][2] = tmp0 * mat[6] + tmp1 * mat[7] + tmp2 * mat[8];
+    }
+}
+
 void Cube::setFaceColor(Color front_color,
                       Color back_color,
                       Color left_color,
@@ -240,4 +239,9 @@ void Cube::setFaceColor(Color front_color,
 void Cube::setFaceColor(Face face_name, Color color_name)
 {
     face_color[face_name] = color_name;
+}
+
+Color Cube::getFaceColor(Face face_name)
+{
+    return face_color[face_name];
 }

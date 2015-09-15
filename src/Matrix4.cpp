@@ -17,6 +17,7 @@
  */
 #include "Matrix4.h"
 #include <cmath>
+#include <cstring>
 #include <algorithm>
 
 const float DEG2RAD = 3.141593f / 180;
@@ -378,4 +379,50 @@ float Matrix4::operator[](int index) const
 float& Matrix4::operator[](int index)
 {
     return m[index];
+}
+
+Matrix3::Matrix3()
+{
+    memset(m, 0, sizeof(float) * 9);
+}
+
+Matrix3& Matrix3::Rotate(float angle, int axis)
+{
+    if (axis == 0)
+    {
+        m[4] = cosf(angle); m[5] = -sinf(angle);
+        m[7] = sinf(angle); m[8] =  cosf(angle);
+        m[0] = 1.0;
+    }
+    else if (axis == 1)
+    {
+        m[0] = cosf(angle); m[2] = -sinf(angle);
+        m[6] = sinf(angle); m[8] =  cosf(angle);
+        m[4] = 1.0;
+    }
+    else
+    {
+        m[0] = cosf(angle); m[1] = -sinf(angle);
+        m[3] = sinf(angle); m[4] =  cosf(angle);
+        m[8] = 1.0;
+    }
+
+    return *this;
+}
+
+float Matrix3::operator[](int index) const
+{
+    return m[index];
+}
+
+std::ostream& operator<<(std::ostream &os, Matrix3 &mat)
+{
+    os.precision(5);
+    os.setf(std::ios::fixed, std::ios::floatfield);
+    os << "[" << mat[0] << ", " << mat[1] << ", " << mat[2] << std::endl;
+    os << " " << mat[3] << ", " << mat[4] << ", " << mat[5] << std::endl;
+    os << " " << mat[6] << ", " << mat[7] << ", " << mat[8] << "]";
+    os << std::endl;
+
+    return os;
 }

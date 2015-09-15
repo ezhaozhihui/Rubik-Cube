@@ -112,4 +112,17 @@ private:
     float m[16];
     float tm[16];
 };
+
+class Matrix3
+{
+    friend std::ostream& operator<<(std::ostream &os, Matrix3 &mat);
+public:
+    Matrix3();
+    Matrix3& Rotate(float angle, int axis);
+
+    float   operator[](int index) const;
+
+private:
+    float m[9];
+};
 #endif

@@ -15,6 +15,8 @@
  * =====================================================================================
  */
 
+#include "Matrix4.h"
+
 enum Color
 {
     red,
@@ -41,6 +43,7 @@ class Cube
 public:
     Cube();
     void translate(float dx, float dy, float dz);
+    void multiMatrix(Matrix3 &mat);
     void setFaceColor(Color front_color,
                       Color back_color,
                       Color left_color,
@@ -48,6 +51,7 @@ public:
                       Color top_color,
                       Color bottom_color);
     void setFaceColor(Face face_name, Color color_name);
+    Color getFaceColor(Face face_name);
 
     void draw();
 
@@ -62,10 +66,10 @@ public:
     RubikCube();
     void init();
     void draw();
+    void updateCube(int axis);
 
 private:
+    void updateCubeIndex();
+
     Cube *SubCube[3][3][3];
-    float theta_x;
-    float theta_y;
-    float theta_z;
 };
