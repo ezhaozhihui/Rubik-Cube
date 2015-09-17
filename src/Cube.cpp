@@ -20,6 +20,8 @@
 const float DEG2RAD = 3.141592653f / 180;
 const float DELTA_ANGLE = 5 * DEG2RAD;
 
+static int count = 0;
+
 static GLubyte color[][3] =
 {
     {243 , 0   , 0}   , // red
@@ -29,6 +31,18 @@ static GLubyte color[][3] =
     {253 , 98  , 0}   , // orange
     {255 , 255 , 255} , // white
     {50  , 50  , 50}  , // black
+};
+
+static GridIndex circleIndex[] =
+{
+    {0, 0},
+    {0, 1},
+    {0, 2},
+    {1, 2},
+    {2, 2},
+    {2, 1},
+    {2, 0},
+    {1, 0},
 };
 
 RubikCube::RubikCube()
@@ -52,8 +66,8 @@ void RubikCube::init()
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
         {
-            SubCube[i][j][0]->setFaceColor(front, white);
-            SubCube[i][j][2]->setFaceColor(back, green);
+            SubCube[i][j][2]->setFaceColor(front, white);
+            SubCube[i][j][0]->setFaceColor(back, green);
         }
 
     for (i = 0; i < 3; i++)
@@ -83,6 +97,7 @@ void RubikCube::draw()
 
 void RubikCube::updateCube(int axis)
 {
+    count++;
     Matrix3 mat;
     int x, y, z;
     switch (axis) {
@@ -92,6 +107,11 @@ void RubikCube::updateCube(int axis)
         for (y = 0; y < 3; y++)
             for (z = 0; z < 3; z++)
                 SubCube[axis][y][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
+        if (count == 18)
+        {
+            count = 0;
+            updateCubeIndex(axis);
+        }
         break;
     case 3:
     case 4:
@@ -99,6 +119,11 @@ void RubikCube::updateCube(int axis)
         for (x = 0; x < 3; x++)
             for (z = 0; z < 3; z++)
                 SubCube[x][axis%3][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
+        if (count == 18)
+        {
+            count = 0;
+            updateCubeIndex(axis);
+        }
         break;
     case 6:
     case 7:
@@ -106,15 +131,49 @@ void RubikCube::updateCube(int axis)
         for (x = 0; x < 3; x++)
             for (y = 0; y < 3; y++)
                 SubCube[x][y][axis%3]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
+        if (count == 18)
+        {
+            count = 0;
+            updateCubeIndex(axis);
+        }
         break;
     default:
         break;
     }
 }
 
-void RubikCube::updateCubeIndex()
+void RubikCube::updateCubeIndex(int axis)
 {
-
+    int i;
+    Cube *tmp[8];
+    switch (axis) {
+    case 0:
+    case 1:
+    case 2:
+        for (i = 0; i < 8; i++)
+            tmp[i] = SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2];
+        for (i = 0; i < 8; i++)
+            SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2] = tmp[(i+2)%8];
+        break;
+    case 3:
+    case 4:
+    case 5:
+        for (i = 0; i < 8; i++)
+            tmp[i] = SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1];
+        for (i = 0; i < 8; i++)
+            SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1] = tmp[(i+2)%8];
+        break;
+    case 6:
+    case 7:
+    case 8:
+        for (i = 0; i < 8; i++)
+            tmp[i] = SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3];
+        for (i = 0; i < 8; i++)
+            SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3] = tmp[(i+2)%8];
+        break;
+    default:
+        break;
+    }
 }
 
 Cube::Cube()

@@ -38,6 +38,12 @@ enum Face
     bottom,
 };
 
+typedef struct GridIndex
+{
+    int x1;
+    int x2;
+} GridIndex;
+
 class Cube
 {
 public:
@@ -69,7 +75,7 @@ public:
     void updateCube(int axis);
 
 private:
-    void updateCubeIndex();
+    void updateCubeIndex(int axis);
 
     Cube *SubCube[3][3][3];
 };
