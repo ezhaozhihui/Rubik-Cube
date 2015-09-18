@@ -386,25 +386,29 @@ Matrix3::Matrix3()
     memset(m, 0, sizeof(float) * 9);
 }
 
-Matrix3& Matrix3::Rotate(float angle, int axis)
+Matrix3& Matrix3::Rotate(float angle, int direction)
 {
-    if (axis == 0)
+    if (direction == 0)
     {
         m[4] = cosf(angle); m[5] = -sinf(angle);
         m[7] = sinf(angle); m[8] =  cosf(angle);
         m[0] = 1.0;
     }
-    else if (axis == 1)
+    else if (direction == 1)
     {
-        m[0] = cosf(angle); m[2] = -sinf(angle);
-        m[6] = sinf(angle); m[8] =  cosf(angle);
+        m[0] = cosf(-angle); m[2] = -sinf(-angle);
+        m[6] = sinf(-angle); m[8] =  cosf(-angle);
         m[4] = 1.0;
     }
-    else
+    else if (direction == 2)
     {
         m[0] = cosf(angle); m[1] = -sinf(angle);
         m[3] = sinf(angle); m[4] =  cosf(angle);
         m[8] = 1.0;
+    }
+    else
+    {
+        ;
     }
 
     return *this;
