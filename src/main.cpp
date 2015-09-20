@@ -5,6 +5,8 @@
 
 
 static RubikCube *g_Rubik = NULL;
+static int g_rotation_count = 0;
+static int g_Rubik_layer = 0;
 
 
 void init(void)
@@ -41,45 +43,56 @@ void reshapeGLScene(GLsizei width, GLsizei height)
     glLoadIdentity();
 }
 
+void OnTimer(int value)
+{
+    g_rotation_count++;
+    g_Rubik->transform(g_Rubik_layer);
+    glutPostRedisplay();
+    if (g_rotation_count < 18)
+        glutTimerFunc(10, OnTimer, 1);
+    else
+        g_rotation_count = 0;
+}
+
 void onKeyboard(unsigned char key, int x, int y)
 {
     x = y;
     switch (key) {
     case '1':
-        g_Rubik->transform(0);
-        glutPostRedisplay();
+        g_Rubik_layer = 0;
+        OnTimer(1);
         break;
     case '2':
-        g_Rubik->transform(1);
-        glutPostRedisplay();
+        g_Rubik_layer = 1;
+        OnTimer(1);
         break;
     case '3':
-        g_Rubik->transform(2);
-        glutPostRedisplay();
+        g_Rubik_layer = 2;
+        OnTimer(1);
         break;
     case '4':
-        g_Rubik->transform(3);
-        glutPostRedisplay();
+        g_Rubik_layer = 3;
+        OnTimer(1);
         break;
     case '5':
-        g_Rubik->transform(4);
-        glutPostRedisplay();
+        g_Rubik_layer = 4;
+        OnTimer(1);
         break;
     case '6':
-        g_Rubik->transform(5);
-        glutPostRedisplay();
+        g_Rubik_layer = 5;
+        OnTimer(1);
         break;
     case '7':
-        g_Rubik->transform(6);
-        glutPostRedisplay();
+        g_Rubik_layer = 6;
+        OnTimer(1);
         break;
     case '8':
-        g_Rubik->transform(7);
-        glutPostRedisplay();
+        g_Rubik_layer = 7;
+        OnTimer(1);
         break;
     case '9':
-        g_Rubik->transform(8);
-        glutPostRedisplay();
+        g_Rubik_layer = 8;
+        OnTimer(1);
         break;
     case 27:
         exit(0);
