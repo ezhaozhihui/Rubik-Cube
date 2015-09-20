@@ -17,8 +17,11 @@
 #include "Cube.h"
 #include <GL/glut.h>
 
+// after COUNT_MAX_NUM rotations with rotation_step degree each time, update subcube indices
+const int   rotation_step = 5;
 const float DEG2RAD = 3.141592653f / 180;
-const float DELTA_ANGLE = 5 * DEG2RAD;
+const float DELTA_ANGLE = rotation_step * DEG2RAD;
+const int   COUNT_MAX_NUM = 90 / rotation_step;
 
 static int count = 0;
 
@@ -107,7 +110,7 @@ void RubikCube::transform(int axis)
         for (y = 0; y < 3; y++)
             for (z = 0; z < 3; z++)
                 SubCube[axis][y][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
-        if (count == 18)
+        if (count == COUNT_MAX_NUM)
         {
             count = 0;
             updateCubeIndex(axis);
@@ -119,7 +122,7 @@ void RubikCube::transform(int axis)
         for (x = 0; x < 3; x++)
             for (z = 0; z < 3; z++)
                 SubCube[x][axis%3][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
-        if (count == 18)
+        if (count == COUNT_MAX_NUM)
         {
             count = 0;
             updateCubeIndex(axis);
@@ -131,7 +134,7 @@ void RubikCube::transform(int axis)
         for (x = 0; x < 3; x++)
             for (y = 0; y < 3; y++)
                 SubCube[x][y][axis%3]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
-        if (count == 18)
+        if (count == COUNT_MAX_NUM)
         {
             count = 0;
             updateCubeIndex(axis);
