@@ -98,22 +98,26 @@ void RubikCube::draw()
                 SubCube[x][y][z]->draw();
 }
 
-void RubikCube::transform(int axis)
+void RubikCube::transform(int axis, bool is_clockwise)
 {
     count++;
     Matrix3 mat;
     int x, y, z;
+    float theta;
+
+    theta = is_clockwise ? -DELTA_ANGLE : DELTA_ANGLE;
+
     switch (axis) {
     case 0:
     case 1:
     case 2:
         for (y = 0; y < 3; y++)
             for (z = 0; z < 3; z++)
-                SubCube[axis][y][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
+                SubCube[axis][y][z]->multiMatrix(mat.Rotate(theta, axis/3));
         if (count == COUNT_MAX_NUM)
         {
             count = 0;
-            updateCubeIndex(axis);
+            updateCubeIndex(axis, is_clockwise);
         }
         break;
     case 3:
@@ -121,11 +125,11 @@ void RubikCube::transform(int axis)
     case 5:
         for (x = 0; x < 3; x++)
             for (z = 0; z < 3; z++)
-                SubCube[x][axis%3][z]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
+                SubCube[x][axis%3][z]->multiMatrix(mat.Rotate(theta, axis/3));
         if (count == COUNT_MAX_NUM)
         {
             count = 0;
-            updateCubeIndex(axis);
+            updateCubeIndex(axis, is_clockwise);
         }
         break;
     case 6:
@@ -133,11 +137,11 @@ void RubikCube::transform(int axis)
     case 8:
         for (x = 0; x < 3; x++)
             for (y = 0; y < 3; y++)
-                SubCube[x][y][axis%3]->multiMatrix(mat.Rotate(DELTA_ANGLE, axis/3));
+                SubCube[x][y][axis%3]->multiMatrix(mat.Rotate(theta, axis/3));
         if (count == COUNT_MAX_NUM)
         {
             count = 0;
-            updateCubeIndex(axis);
+            updateCubeIndex(axis, is_clockwise);
         }
         break;
     default:
@@ -145,7 +149,7 @@ void RubikCube::transform(int axis)
     }
 }
 
-void RubikCube::updateCubeIndex(int axis)
+void RubikCube::updateCubeIndex(int axis, bool is_clockwise)
 {
     int i;
     Cube *tmp[8] = {0};
@@ -153,22 +157,34 @@ void RubikCube::updateCubeIndex(int axis)
     {
         for (i = 0; i < 8; i++)
             tmp[i] = SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2];
-        for (i = 0; i < 8; i++)
-            SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2] = tmp[(i+2)%8];
+        if (!is_clockwise)
+            for (i = 0; i < 8; i++)
+                SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2] = tmp[(i+2)%8];
+        else
+            for (i = 0; i < 8; i++)
+                SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2] = tmp[(i+6)%8];
     }
     else if (axis == 3 || axis == 4 || axis == 5)
     {
         for (i = 0; i < 8; i++)
             tmp[i] = SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1];
-        for (i = 0; i < 8; i++)
-            SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1] = tmp[(i+2)%8];
+        if (!is_clockwise)
+            for (i = 0; i < 8; i++)
+                SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1] = tmp[(i+2)%8];
+        else
+            for (i = 0; i < 8; i++)
+                SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1] = tmp[(i+6)%8];
     }
     else if (axis == 6 || axis == 7 || axis == 8)
     {
         for (i = 0; i < 8; i++)
             tmp[i] = SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3];
-        for (i = 0; i < 8; i++)
-            SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3] = tmp[(i+2)%8];
+        if (!is_clockwise)
+            for (i = 0; i < 8; i++)
+                SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3] = tmp[(i+2)%8];
+        else
+            for (i = 0; i < 8; i++)
+                SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3] = tmp[(i+6)%8];
     }
     else
     {
