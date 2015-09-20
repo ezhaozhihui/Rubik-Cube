@@ -95,7 +95,7 @@ void RubikCube::draw()
                 SubCube[x][y][z]->draw();
 }
 
-void RubikCube::updateCube(int axis)
+void RubikCube::transform(int axis)
 {
     count++;
     Matrix3 mat;
@@ -145,34 +145,31 @@ void RubikCube::updateCube(int axis)
 void RubikCube::updateCubeIndex(int axis)
 {
     int i;
-    Cube *tmp[8];
-    switch (axis) {
-    case 0:
-    case 1:
-    case 2:
+    Cube *tmp[8] = {0};
+    if (axis == 0 || axis == 1 || axis == 2)
+    {
         for (i = 0; i < 8; i++)
             tmp[i] = SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2];
         for (i = 0; i < 8; i++)
             SubCube[axis%3][circleIndex[i].x1][circleIndex[i].x2] = tmp[(i+2)%8];
-        break;
-    case 3:
-    case 4:
-    case 5:
+    }
+    else if (axis == 3 || axis == 4 || axis == 5)
+    {
         for (i = 0; i < 8; i++)
             tmp[i] = SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1];
         for (i = 0; i < 8; i++)
             SubCube[circleIndex[i].x2][axis%3][circleIndex[i].x1] = tmp[(i+2)%8];
-        break;
-    case 6:
-    case 7:
-    case 8:
+    }
+    else if (axis == 6 || axis == 7 || axis == 8)
+    {
         for (i = 0; i < 8; i++)
             tmp[i] = SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3];
         for (i = 0; i < 8; i++)
             SubCube[circleIndex[i].x1][circleIndex[i].x2][axis%3] = tmp[(i+2)%8];
-        break;
-    default:
-        break;
+    }
+    else
+    {
+        ;
     }
 }
 
@@ -192,13 +189,30 @@ Cube::Cube()
 
 void Cube::draw()
 {
-    glBegin(GL_LINE);
-    glColor3ub(255, 0, 0);
-    glLineWidth(3.0f);
-    //glVertex3fv(m_vertex[0]);
-    //glVertex3fv(m_vertex[1]);
-    glVertex3f(2, 2, 2);
-    glVertex3f(2, 0, 2);
+    glColor3ub(50, 50, 50);
+    glBegin(GL_LINE_LOOP);
+    glVertex3fv(m_vertex[0]);
+    glVertex3fv(m_vertex[1]);
+    glVertex3fv(m_vertex[2]);
+    glVertex3fv(m_vertex[3]);
+    glEnd();
+    glBegin(GL_LINE_LOOP);
+    glVertex3fv(m_vertex[4]);
+    glVertex3fv(m_vertex[5]);
+    glVertex3fv(m_vertex[6]);
+    glVertex3fv(m_vertex[7]);
+    glEnd();
+    glBegin(GL_LINE_LOOP);
+    glVertex3fv(m_vertex[1]);
+    glVertex3fv(m_vertex[6]);
+    glVertex3fv(m_vertex[7]);
+    glVertex3fv(m_vertex[2]);
+    glEnd();
+    glBegin(GL_LINE_LOOP);
+    glVertex3fv(m_vertex[0]);
+    glVertex3fv(m_vertex[3]);
+    glVertex3fv(m_vertex[4]);
+    glVertex3fv(m_vertex[5]);
     glEnd();
 
 

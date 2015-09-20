@@ -72,7 +72,7 @@ public:
     RubikCube();
     void init();
     void draw();
-    void updateCube(int axis);
+    void transform(int axis);
 
 private:
     void updateCubeIndex(int axis);

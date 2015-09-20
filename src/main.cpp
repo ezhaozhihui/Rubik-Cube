@@ -12,6 +12,15 @@ void init(void)
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
+    glPointSize(5);
+    glLineWidth(3);
+
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_POINT_SMOOTH, GL_NICEST);
+    glHint(GL_LINE_SMOOTH, GL_NICEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glMatrixMode(GL_PROJECTION);
     glOrtho(-5, 5, -5, 5, 0.1, 100);
     glMatrixMode(GL_MODELVIEW);
@@ -37,39 +46,39 @@ void onKeyboard(unsigned char key, int x, int y)
     x = y;
     switch (key) {
     case '1':
-        g_Rubik->updateCube(0);
+        g_Rubik->transform(0);
         glutPostRedisplay();
         break;
     case '2':
-        g_Rubik->updateCube(1);
+        g_Rubik->transform(1);
         glutPostRedisplay();
         break;
     case '3':
-        g_Rubik->updateCube(2);
+        g_Rubik->transform(2);
         glutPostRedisplay();
         break;
     case '4':
-        g_Rubik->updateCube(3);
+        g_Rubik->transform(3);
         glutPostRedisplay();
         break;
     case '5':
-        g_Rubik->updateCube(4);
+        g_Rubik->transform(4);
         glutPostRedisplay();
         break;
     case '6':
-        g_Rubik->updateCube(5);
+        g_Rubik->transform(5);
         glutPostRedisplay();
         break;
     case '7':
-        g_Rubik->updateCube(6);
+        g_Rubik->transform(6);
         glutPostRedisplay();
         break;
     case '8':
-        g_Rubik->updateCube(7);
+        g_Rubik->transform(7);
         glutPostRedisplay();
         break;
     case '9':
-        g_Rubik->updateCube(8);
+        g_Rubik->transform(8);
         glutPostRedisplay();
         break;
     case 27:
