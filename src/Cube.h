@@ -72,10 +72,10 @@ public:
     RubikCube();
     void init();
     void draw();
-    void transform(int axis);
+    void transform(int axis, bool is_clockwise);
 
 private:
-    void updateCubeIndex(int axis);
+    void updateCubeIndex(int axis, bool is_clockwise);
 
     Cube *SubCube[3][3][3];
 };
