@@ -5,7 +5,6 @@
 
 
 static RubikCube *g_Rubik = NULL;
-static int g_rotation_count = 0;
 static int g_Rubik_layer = 0;
 
 
@@ -45,8 +44,11 @@ void reshapeGLScene(GLsizei width, GLsizei height)
 
 void OnTimer(int value)
 {
+    value = 0;
+    static int g_rotation_count;
+    static bool clockwise = true;
     g_rotation_count++;
-    g_Rubik->transform(g_Rubik_layer);
+    g_Rubik->transform(g_Rubik_layer, clockwise);
     glutPostRedisplay();
     if (g_rotation_count < 18)
         glutTimerFunc(10, OnTimer, 1);
@@ -56,7 +58,6 @@ void OnTimer(int value)
 
 void onKeyboard(unsigned char key, int x, int y)
 {
-    x = y;
     switch (key) {
     case '1':
         g_Rubik_layer = 0;
