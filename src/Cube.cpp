@@ -15,7 +15,6 @@
  * =====================================================================================
  */
 #include "Cube.h"
-#include <GL/glut.h>
 
 // after COUNT_MAX_NUM rotations with rotation_step degree each time, update subcube indices
 const int   rotation_step = 5;

@@ -1,11 +1,14 @@
 #include <iostream>
 #include <string.h>
-#include <GL/glut.h>
+#include <ctime>
+#include <cstdlib>
 #include "Cube.h"
 
 
 static RubikCube *g_Rubik = NULL;
 static int g_Rubik_layer = 0;
+static bool clockwise = true;
+static bool switch_on = false;
 
 
 void init(void)
@@ -46,54 +49,30 @@ void OnTimer(int value)
 {
     value = 0;
     static int g_rotation_count;
-    static bool clockwise = true;
     g_rotation_count++;
     g_Rubik->transform(g_Rubik_layer, clockwise);
     glutPostRedisplay();
-    if (g_rotation_count < 18)
+    if (g_rotation_count < 18)          // one complete layer rotation
         glutTimerFunc(10, OnTimer, 1);
-    else
+    else                                // start another layer rotation
+    {
         g_rotation_count = 0;
+        g_Rubik_layer = rand() % 9;
+        clockwise = rand() % 2;
+        if (switch_on)
+            glutTimerFunc(50, OnTimer, 1);
+    }
 }
 
 void onKeyboard(unsigned char key, int x, int y)
 {
     switch (key) {
-    case '1':
-        g_Rubik_layer = 0;
+    case 'A':
+        switch_on = true;
         OnTimer(1);
         break;
-    case '2':
-        g_Rubik_layer = 1;
-        OnTimer(1);
-        break;
-    case '3':
-        g_Rubik_layer = 2;
-        OnTimer(1);
-        break;
-    case '4':
-        g_Rubik_layer = 3;
-        OnTimer(1);
-        break;
-    case '5':
-        g_Rubik_layer = 4;
-        OnTimer(1);
-        break;
-    case '6':
-        g_Rubik_layer = 5;
-        OnTimer(1);
-        break;
-    case '7':
-        g_Rubik_layer = 6;
-        OnTimer(1);
-        break;
-    case '8':
-        g_Rubik_layer = 7;
-        OnTimer(1);
-        break;
-    case '9':
-        g_Rubik_layer = 8;
-        OnTimer(1);
+    case 'a':
+        switch_on = false;
         break;
     case 27:
         exit(0);
@@ -118,6 +97,8 @@ int main(int argc, char **argv)
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(800, 600);
     glutCreateWindow("Rubik Cube");
+
+    srand((int)time(0));
 
     RubikCube *Rubik = new RubikCube();
     g_Rubik = Rubik;
