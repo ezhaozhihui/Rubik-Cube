@@ -6,8 +6,6 @@
 
 
 static RubikCube *g_Rubik = NULL;
-static int g_Rubik_layer = 0;
-static bool clockwise = true;
 static bool switch_on = false;
 
 
@@ -38,17 +36,14 @@ void reshapeGLScene(GLsizei width, GLsizei height)
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (float)width/(float)height, 0.1, 100);
-    //glOrtho(-5, 5, -5 * (float)height/(float)width, 5 * (float)height/(float)width, 0.1, 100);
-    //glOrtho(-5, 5, -5, 5, 0.1, 100);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glOrtho(-5, 5, -5*(float)height/(float)width, 5*(float)height/(float)width, 0.1, 100);
 }
 
 void OnTimer(int value)
 {
-    value = 0;
     static int g_rotation_count;
+    static int g_Rubik_layer = 0;
+    static bool clockwise = true;
     g_rotation_count++;
     g_Rubik->transform(g_Rubik_layer, clockwise);
     glutPostRedisplay();
@@ -106,7 +101,7 @@ int main(int argc, char **argv)
 
     init();
     glutDisplayFunc(display);
-    //glutReshapeFunc(reshapeGLScene);
+    glutReshapeFunc(reshapeGLScene);
     glutKeyboardFunc(onKeyboard);
     glutMainLoop();
 

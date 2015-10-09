@@ -68,22 +68,22 @@ void RubikCube::init()
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
         {
-            SubCube[i][j][2]->setFaceColor(front, white);
+            SubCube[i][j][2]->setFaceColor(front, blue);
             SubCube[i][j][0]->setFaceColor(back, green);
         }
 
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
         {
-            SubCube[0][i][j]->setFaceColor(left, yellow);
-            SubCube[2][i][j]->setFaceColor(right, orange);
+            SubCube[0][i][j]->setFaceColor(left, orange);
+            SubCube[2][i][j]->setFaceColor(right, red);
         }
 
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++)
         {
-            SubCube[i][0][j]->setFaceColor(bottom, blue);
-            SubCube[i][2][j]->setFaceColor(top, red);
+            SubCube[i][0][j]->setFaceColor(bottom, white);
+            SubCube[i][2][j]->setFaceColor(top, yellow);
         }
 
 }
